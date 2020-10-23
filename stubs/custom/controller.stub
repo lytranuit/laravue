@@ -48,12 +48,15 @@ class {{ class }}Controller extends Controller
             return response()->json(['errors' => $validator->errors()], 403);
         } else {
             $params = $request->all();
-            ${{ class }} = {{ class }}::create([
-                'name' => $params['name'],
-                'code' => time(), // Chỗ này tạo cái dữ liệu duy nhất cho trường code - chủ yếu là cho vui.
-                'description' => $params['description'],
-            ]);
-
+            ${{ class }}= new {{ class }}();
+            foreach ($C{{ class }}->getFillable() as $key) {
+                if (isset($params[$key])) {
+                    ${{ class }}->{$key} = $params[$key];
+                } else {
+                    continue;
+                }
+            }
+            ${{ class }}->save();
             return new {{ class }}Resource(${{ class }});
         }
     }
@@ -104,8 +107,13 @@ class {{ class }}Controller extends Controller
             return response()->json(['errors' => $validator->errors()], 403);
         } else {
             $params = $request->all();
-            ${{ class }}->name = $params['name'];
-            ${{ class }}->description = $params['description'];
+            foreach (${{ class }}->getFillable() as $key) {
+                if (isset($params[$key])) {
+                    ${{ class }}->{$key} = $params[$key];
+                } else {
+                    continue;
+                }
+            }
             ${{ class }}->save();
         }
 
