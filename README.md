@@ -38,6 +38,7 @@ Documentation: [https://doc.laravue.dev](https://doc.laravue.dev)
 ### Installing
 #### Manual
 
+```
 # Migration and DB seeder (after changing your DB settings in .env)
 php artisan migrate --seed
 
@@ -49,10 +50,8 @@ npm run dev # or npm run watch
 
 # Build on production
 npm run production
-
-
-
 ```
+
 #### Build on Resource
 ```
 # Create Table SQL
