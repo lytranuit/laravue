@@ -1,0 +1,131 @@
+<?php
+
+namespace {{ namespace }};
+
+use App\Http\Resources\{{ class }}Resource;
+use App\Laravue\Models\{{ class }};
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator as Validator;
+
+class {{ class }}Controller extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        return {{ class }}Resource::collection({{ class }}::all());
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'name' => ['required']
+            ]
+        );
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 403);
+        } else {
+            $params = $request->all();
+            ${{ class }} = {{ class }}::create([
+                'name' => $params['name'],
+                'code' => time(), // Chỗ này tạo cái dữ liệu duy nhất cho trường code - chủ yếu là cho vui.
+                'description' => $params['description'],
+            ]);
+
+            return new {{ class }}Resource(${{ class }});
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Laravue\Models\{{ class }}  ${{ class }}
+     * @return \Illuminate\Http\Response
+     */
+    public function show({{ class }} ${{ class }})
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Laravue\Models\{{ class }}  ${{ class }}
+     * @return \Illuminate\Http\Response
+     */
+    public function edit({{ class }} ${{ class }})
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Laravue\Models\Category  $category
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, {{ class }} ${{ class }})
+    {
+        if (${{ class }} === null) {
+            return response()->json(['error' => '{{ class }} not found'], 404);
+        }
+
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'name' => ['required']
+            ]
+        );
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 403);
+        } else {
+            $params = $request->all();
+            ${{ class }}->name = $params['name'];
+            ${{ class }}->description = $params['description'];
+            ${{ class }}->save();
+        }
+
+        return new {{ class }}Resource(${{ class }});
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Laravue\Models\{{ class }}  ${{ class }}
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy({{ class }} ${{ class }})
+    {
+        try {
+            ${{ class }}->delete();
+        } catch (\Exception $ex) {
+            response()->json(['error' => $ex->getMessage()], 403);
+        }
+
+        return response()->json(null, 204);
+    }
+}
