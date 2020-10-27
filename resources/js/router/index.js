@@ -98,18 +98,18 @@ export const constantRoutes = [{
 export const asyncRoutes = [
     permissionRoutes,
     adminRoutes,
-    {
-        path: '/categories',
-        component: Layout,
-        redirect: 'categories',
-        children: [{
-            path: '',
-            component: () =>
-                import ('@/views/categories/List'),
-            name: 'CategoryList',
-            meta: { title: 'categoryList', icon: 'list', noCache: true },
-        }],
-    },
+    // {
+    //    path: '/categories',
+    //    component: Layout,
+    //    redirect: 'categories',
+    //    children: [{
+    //        path: '',
+    //        component: () =>
+    //            import ('@/views/categories/List'),
+    //        name: 'CategoryList',
+    //        meta: { title: 'categoryList', icon: 'list', noCache: true },
+    //    }],
+    // },
     errorRoutes,
     { path: '*', redirect: '/404', hidden: true },
 ];
