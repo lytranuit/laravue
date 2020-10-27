@@ -1,0 +1,180 @@
+<!-- File: resources/js/views/Schedule/List.vue -->
+<template>
+  <div class="app-container">
+    <div class="filter-container">
+      <el-button
+        class="filter-item"
+        type="primary"
+        icon="el-icon-plus"
+        @click="handleCreateForm"
+      >
+        {{ $t('table.add') }}
+      </el-button>
+    </div>
+    <el-table v-loading="loading" :data="list" border fit highlight-current-row>
+      <el-table-column align="center" label="ID" width="80">
+        <template slot-scope="scope">
+          <span>{{ scope.row.id }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="Actions" width="350">
+        <template slot-scope="scope">
+          <el-button
+            type="primary"
+            size="small"
+            icon="el-icon-edit"
+            @click="handleEditForm(scope.row.id, scope.row.name)"
+          >
+            Edit
+          </el-button>
+          <el-button
+            type="danger"
+            size="small"
+            icon="el-icon-delete"
+            @click="handleDelete(scope.row.id, scope.row.name)"
+          >
+            Delete
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-dialog :title="'Create new Schedule'" :visible.sync="formVisible">
+      <div class="form-container">
+        <el-form
+          ref="ScheduleForm"
+          :model="currentObject"
+          label-position="left"
+          label-width="150px"
+          style="max-width: 500px"
+        >
+          <el-form-item label="Name" prop="name">
+            <el-input v-model="currentObject.name" />
+          </el-form-item>
+          <el-form-item label="Description" prop="description">
+            <el-input v-model="currentObject.description" type="textarea" />
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="formVisible = false"> Cancel </el-button>
+          <el-button type="primary" @click="handleSubmit()">
+            Confirm
+          </el-button>
+        </div>
+      </div>
+    </el-dialog>
+  </div>
+</template>
+
+<script>
+import Resource from '@/api/resource';
+const objectResource = new Resource('schedule');
+
+export default {
+  name: 'ScheduleList',
+  data() {
+    return {
+      list: [],
+      loading: true, // Ban đầu sẽ hiển thị loading icon
+      formVisible: false,
+      currentObject: {},
+    };
+  },
+  created() {
+    this.getList();
+  },
+  methods: {
+    async getList() {
+      this.loading = true;
+      const { data } = await objectResource.list({});
+      this.list = data;
+      this.loading = false; // Ẩn loading icon khi dữ liệu được load xong
+    },
+    handleSubmit() {
+      if (this.currentObject.id !== undefined) {
+        objectResource
+          .update(this.currentObject.id, this.currentObject)
+          .then((response) => {
+            this.$message({
+              type: 'success',
+              message: 'Schedule info has been updated successfully',
+              duration: 5 * 1000,
+            });
+            this.getList();
+          })
+          .catch((error) => {
+            console.log(error);
+          })
+          .finally(() => {
+            this.formVisible = false;
+          });
+      } else {
+        objectResource
+          .store(this.currentObject)
+          .then((response) => {
+            this.$message({
+              message:
+                'New Schedule ' +
+                this.currentObject.name +
+                ' has been created successfully.',
+              type: 'success',
+              duration: 5 * 1000,
+            });
+            this.currentObject = {
+              name: '',
+              description: '',
+            };
+            this.formVisible = false;
+            this.getList();
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    },
+    handleCreateForm() {
+      this.formVisible = true;
+      this.currentObject = {
+        name: '',
+        description: '',
+      };
+    },
+    handleEditForm(id) {
+      this.formTitle = 'Edit Schedule';
+      this.currentObject = this.list.find((Schedule) => Schedule.id === id);
+      this.formVisible = true;
+    },
+    handleDelete(id, name) {
+      this.$confirm(
+        'This will permanently delete Schedule ' + name + '. Continue?',
+        'Warning',
+        {
+          confirmButtonText: 'OK',
+          cancelButtonText: 'Cancel',
+          type: 'warning',
+        }
+      )
+        .then(() => {
+          objectResource
+            .destroy(id)
+            .then((response) => {
+              this.$message({
+                type: 'success',
+                message: 'Delete completed',
+              });
+              this.getList();
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: 'Delete canceled',
+          });
+        });
+    },
+  },
+};
+</script>

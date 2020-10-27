@@ -18,7 +18,8 @@ use \App\Laravue\Acl;
 |
 */
 
-Route::apiResource('categories', 'CategoryController');
+Route::apiResource('schedule', 'ScheduleController');
+Route::apiResource('job', 'JobController');
 Route::namespace('Api')->group(function () {
     Route::post('auth/login', 'AuthController@login');
     Route::group(['middleware' => 'auth:sanctum'], function () {

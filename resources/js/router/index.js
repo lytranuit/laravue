@@ -99,15 +99,27 @@ export const asyncRoutes = [
     permissionRoutes,
     adminRoutes,
     {
-        path: '/categories',
+        path: '/job',
         component: Layout,
-        redirect: 'categories',
+        redirect: 'job',
+        name: 'Job',
+        meta: {
+            title: 'job',
+            icon: 'admin',
+            permissions: ['view menu administrator'],
+        },
         children: [{
             path: '',
             component: () =>
-                import ('@/views/categories/List'),
-            name: 'CategoryList',
-            meta: { title: 'categoryList', icon: 'list', noCache: true },
+                import ('@/views/job/List'),
+            name: 'jobList',
+            meta: { title: 'jobList', icon: 'list', noCache: true },
+        }, {
+            path: 'schedule',
+            component: () =>
+                import ('@/views/schedule/List'),
+            name: 'scheduleList',
+            meta: { title: 'scheduleList', icon: 'list', noCache: true },
         }],
     },
     errorRoutes,
