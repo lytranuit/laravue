@@ -67,7 +67,7 @@ class CreateResource extends GeneratorCommand
 
         $this->callSilent('make:resource', ['name' => $this->argument('name') . "Resource"]);
         $this->callSilent('create:controller', ['name' => $this->argument('name')]);
-
+        $this->callSilent('create:frontend', ['name' => $this->argument('name')]);
         //$this->callSilent('make:controller', ['name' => $this->argument('name') . "Controller", '--resource', '--model' => "Laravue\\Models\\" . $this->argument('name')]);
 
         $this->info($this->type . ' created successfully.');

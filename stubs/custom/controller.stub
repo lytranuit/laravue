@@ -49,7 +49,7 @@ class {{ class }}Controller extends Controller
         } else {
             $params = $request->all();
             ${{ class }}= new {{ class }}();
-            foreach ($C{{ class }}->getFillable() as $key) {
+            foreach (${{ class }}->getFillable() as $key) {
                 if (isset($params[$key])) {
                     ${{ class }}->{$key} = $params[$key];
                 } else {

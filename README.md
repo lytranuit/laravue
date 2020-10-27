@@ -65,10 +65,24 @@ php artisan create:resource Test
 # Route Resource
 Route::apiResource('test', 'TestController');
 
-# Create Frontend 
+# Custom Frontend 
 
 ```
-
+### Build Menu
+```
+{
+        path: '/test',
+        component: Layout,
+        redirect: 'test',
+        children: [{
+            path: '',
+            component: () =>
+                import ('@/views/test/List'),
+            name: 'TestList',
+            meta: { title: 'testList', icon: 'list', noCache: true },
+        }],
+    },
+```
 #### Docker
 ```sh
 docker-compose up -d
