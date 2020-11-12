@@ -20,7 +20,7 @@ use \App\Laravue\Acl;
 
 Route::apiResource('categories', 'CategoryController');
 Route::namespace('Api')->group(function () {
-    Route::post('auth/login', 'AuthController@login');
+    Route::post('auth/login', 'AuthController@login')->middleware("throttle:10,2");;
     Route::group(['middleware' => 'auth:sanctum'], function () {
         // Auth routes
         Route::get('auth/user', 'AuthController@user');

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File UserController.php
  *
@@ -41,12 +42,15 @@ class UserController extends BaseController
     {
         $searchParams = $request->all();
         $userQuery = User::query();
+        $userQuery->orderBy('id', 'desc');
         $limit = Arr::get($searchParams, 'limit', static::ITEM_PER_PAGE);
         $role = Arr::get($searchParams, 'role', '');
         $keyword = Arr::get($searchParams, 'keyword', '');
 
         if (!empty($role)) {
-            $userQuery->whereHas('roles', function($q) use ($role) { $q->where('name', $role); });
+            $userQuery->whereHas('roles', function ($q) use ($role) {
+                $q->where('name', $role);
+            });
         }
 
         if (!empty($keyword)) {
@@ -120,7 +124,8 @@ class UserController extends BaseController
         }
 
         $currentUser = Auth::user();
-        if (!$currentUser->isAdmin()
+        if (
+            !$currentUser->isAdmin()
             && $currentUser->id !== $user->id
             && !$currentUser->hasPermission(\App\Laravue\Acl::PERMISSION_USER_MANAGE)
         ) {
@@ -140,6 +145,10 @@ class UserController extends BaseController
             $user->name = $request->get('name');
             $user->email = $email;
             $user->save();
+
+            $params = $request->all();
+            $role = Role::findByName($params['role']);
+            $user->syncRoles($role);
             return new UserResource($user);
         }
     }
@@ -163,7 +172,7 @@ class UserController extends BaseController
 
         $permissionIds = $request->get('permissions', []);
         $rolePermissionIds = array_map(
-            function($permission) {
+            function ($permission) {
                 return $permission['id'];
             },
 

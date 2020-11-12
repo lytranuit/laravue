@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File AuthController.php
  *
@@ -6,6 +7,7 @@
  * @package Laravue
  * @version 1.0
  */
+
 namespace App\Http\Controllers\Api;
 
 use App\Http\Resources\UserResource;
@@ -21,6 +23,8 @@ use Illuminate\Support\Facades\Auth;
  */
 class AuthController extends BaseController
 {
+    protected $maxAttempts = 3; // Default is 5
+    protected $decayMinutes = 1; // Default is 1
     /**
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
@@ -46,5 +50,4 @@ class AuthController extends BaseController
         Auth::guard('web')->logout();
         return response()->json((new JsonResponse())->success([]), Response::HTTP_OK);
     }
-
 }
